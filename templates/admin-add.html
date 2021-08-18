@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add User</title>
+</head>
+<body>
+    <form class="form-horizontal admin-employee" method="post" action="/admin/addUser">
+
+        <div class="row form-group">
+          <label for="id" class="col-lg-2 control-label text-right">Id</label>
+          <div class="col-lg-2">
+            <input type="text" id="id" name="id" class="form-control" value={{.ID}}>
+          </div>
+          <label for="firstName" class="col-lg-2 control-label text-right">Name</label>
+          <div class="col-lg-2">
+            <input type="text" id="firstName" name="firstName" class="form-control"  value={{.FirstName}}>
+          </div>
+          <div class="col-lg-2">
+            <input type="text" id="lastName" name="lastName" class="form-control"  value={{.LastName}}>
+          </div>
+        </div>
+        <div class="col-lg-3 col-lg-offset-8">
+          <button type="submit" class="btn btn-lg admin-primary">Create</button>
+        </div>
+      </form>
+</body>
+</html>
