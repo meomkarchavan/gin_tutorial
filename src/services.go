@@ -17,7 +17,6 @@ func CreateToken(user User) (string, error) {
 	atClaims["authorized"] = true
 	atClaims["user_id"] = user.UserNo
 	atClaims["username"] = user.Username
-	atClaims["password"] = user.Password
 	atClaims["exp"] = time.Now().Add(time.Minute * 15).Unix()
 	at := jwt.NewWithClaims(jwt.SigningMethodHS256, atClaims)
 	token, err := at.SignedString([]byte(os.Getenv("ACCESS_SECRET")))
@@ -33,6 +32,7 @@ func Login(c *gin.Context) {
 		c.JSON(http.StatusUnprocessableEntity, "Invalid json provided")
 		return
 	}
+
 	result, err := find_user(u.Username)
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, "Please provide valid login details")

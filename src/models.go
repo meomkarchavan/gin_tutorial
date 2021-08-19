@@ -48,10 +48,11 @@ var test_user = User{
 type User struct {
 	ID        primitive.ObjectID `bson:"_id,omitempty"`
 	UserNo    uint               `form:"userno"        json:"userno"`
-	FirstName string             `form:"firstName" json:"firstName"`
-	LastName  string             `form:"lastName"  json:"lastName"`
-	Username  string             `form:"username" json:"username"`
-	Password  string             `form:"password" json:"password"`
+	Email     string             `form:"email" json:"email" validate:"required,email"`
+	FirstName string             `form:"firstName" json:"firstName" validate:"required"`
+	LastName  string             `form:"lastName"  json:"lastName" validate:"required"`
+	Username  string             `form:"username" json:"username" validate:"required"`
+	Password  string             `form:"password" json:"password" validate:"required"`
 }
 
 // https://learn.vonage.com/blog/2020/03/13/using-jwt-for-authentication-in-a-golang-application-dr/

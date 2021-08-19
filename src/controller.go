@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"github.com/go-playground/validator"
 )
 
 func registerRoutes() *gin.Engine {
@@ -51,11 +52,25 @@ func registerRoutes() *gin.Engine {
 	})
 	r.POST("/signup", func(c *gin.Context) {
 		var user User
+
+		v := validator.New()
+
 		err := c.Bind(&user)
 		if err != nil {
 			c.String(http.StatusBadRequest, err.Error())
 			return
 		}
+
+		err = v.Struct(user)
+
+		for _, e := range err.(validator.ValidationErrors) {
+			c.JSON(
+				http.StatusOK,
+				gin.H{"error": "invaid data" + e.Field()},
+			)
+			return
+		}
+
 		result := create_user(user)
 
 		c.JSON(
