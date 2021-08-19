@@ -51,7 +51,7 @@ func Login(c *gin.Context) {
 	}
 
 	loginCookies[lc.value] = &lc
-	c.SetCookie(loginCookieName, lc.value, 10*60, "", "localhost", false, true)
+	c.SetCookie(loginCookieName, lc.token, 10*60, "", "localhost", false, true)
 
 	c.JSON(http.StatusOK, token)
 }
