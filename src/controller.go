@@ -2,16 +2,20 @@ package main
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
 
 func registerRoutes() *gin.Engine {
 	r := gin.Default()
+	r.Use(loginMiddleware)
+
 	r.LoadHTMLGlob("D:\\GO_Workspace\\src\\day7\\gin\\hello_world\\templates\\*.html")
 	r.GET("/", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "index.html", nil)
 	})
+
 	test := r.Group("/test")
 	test.GET("/", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "group-test.html", nil)
@@ -35,8 +39,7 @@ func registerRoutes() *gin.Engine {
 	admin.POST("/addUser", func(c *gin.Context) {
 		var user User
 		err := c.Bind(&user)
-		// user.ID = 42
-		users[user.ID] = user
+		users[strconv.FormatUint(uint64(user.UserNo), 10)] = user
 		if err != nil {
 			c.String(http.StatusBadRequest, err.Error())
 			return
@@ -46,6 +49,21 @@ func registerRoutes() *gin.Engine {
 			users,
 		)
 	})
+	r.POST("/signup", func(c *gin.Context) {
+		var user User
+		err := c.Bind(&user)
+		if err != nil {
+			c.String(http.StatusBadRequest, err.Error())
+			return
+		}
+		result := create_user(user)
+
+		c.JSON(
+			http.StatusOK,
+			result.InsertedID,
+		)
+	})
+	r.POST("/login", Login)
 	r.Static("/public", "D:\\GO_Workspace\\src\\day7\\gin\\hello_world\\public")
 	return r
 }
