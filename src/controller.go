@@ -70,6 +70,8 @@ func registerRoutes() *gin.Engine {
 			)
 			return
 		}
+		user.UserNo = counter
+		counter += 1
 
 		result := create_user(user)
 
