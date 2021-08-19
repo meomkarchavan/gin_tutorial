@@ -33,7 +33,7 @@ func Login(c *gin.Context) {
 		c.JSON(http.StatusUnprocessableEntity, "Invalid json provided")
 		return
 	}
-	result, err := find_user(int(u.UserNo))
+	result, err := find_user(u.Username)
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, "Please provide valid login details")
 		return

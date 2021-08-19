@@ -36,11 +36,11 @@ func create_user(user User) *mongo.InsertOneResult {
 	return result
 }
 
-func find_user(userNo int) (User, error) {
+func find_user(username string) (User, error) {
 	client := create_connection()
 	collection := client.Database("training_db").Collection("users")
 
-	filter := bson.D{primitive.E{Key: "userno", Value: userNo}}
+	filter := bson.D{primitive.E{Key: "username", Value: username}}
 
 	var result User
 
