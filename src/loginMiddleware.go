@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"net/http"
 	"strings"
 	"time"
@@ -30,6 +31,7 @@ func loginMiddleware(c *gin.Context) {
 		cookie.origin != c.Request.RemoteAddr {
 		c.Redirect(http.StatusTemporaryRedirect, "/login")
 	}
+	log.Println(cookieValue)
 
 	c.Next()
 }

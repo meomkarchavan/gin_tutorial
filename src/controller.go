@@ -80,6 +80,9 @@ func registerRoutes() *gin.Engine {
 			result.InsertedID,
 		)
 	})
+	r.GET("/login", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "login.html", nil)
+	})
 	r.POST("/login", Login)
 	r.Static("/public", "D:\\GO_Workspace\\src\\day7\\gin\\hello_world\\public")
 	return r

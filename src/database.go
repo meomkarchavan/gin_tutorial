@@ -28,7 +28,7 @@ func create_connection() *mongo.Client {
 func create_user(user User) *mongo.InsertOneResult {
 	client := create_connection()
 	collection := client.Database("training_db").Collection("users")
-	result, err := collection.InsertOne(context.TODO(), user)
+	result, err := collection.InsertOne(ctx, user)
 	if err != nil {
 		log.Fatal(err)
 	}

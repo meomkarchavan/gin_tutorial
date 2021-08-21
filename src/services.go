@@ -8,7 +8,6 @@ import (
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
-	"github.com/go-playground/validator"
 )
 
 func CreateToken(user User) (string, error) {
@@ -29,23 +28,23 @@ func CreateToken(user User) (string, error) {
 
 func Login(c *gin.Context) {
 	var user User
-	if err := c.ShouldBindJSON(&user); err != nil {
+	if err := c.Bind(&user); err != nil {
 		c.JSON(http.StatusUnprocessableEntity, "Invalid json provided")
 		return
 	}
 	//TODO
 	// validate username password
 	//https://github.com/go-validator/validator
-	v := validator.New()
-	err := v.Struct(user)
+	// v := validator.New()
+	// err := v.Struct(user)
 
-	for _, e := range err.(validator.ValidationErrors) {
-		c.JSON(
-			http.StatusOK,
-			gin.H{"error": "Invaid data" + e.Field()},
-		)
-		return
-	}
+	// for _, e := range err.(validator.ValidationErrors) {
+	// 	c.JSON(
+	// 		http.StatusOK,
+	// 		gin.H{"error": "Invaid data" + e.Field()},
+	// 	)
+	// 	return
+	// }
 
 	result, err := find_user(user.Username)
 	if err != nil {
