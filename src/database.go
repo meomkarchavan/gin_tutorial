@@ -34,12 +34,13 @@ func create_user(user User) *mongo.InsertOneResult {
 	}
 	return result
 }
-func set_counter() int64 {
-	client := create_connection()
-	collection := client.Database("training_db").Collection("users")
-	result, _ := collection.CountDocuments(ctx, User{})
-	return result
-}
+
+// func set_counter() int64 {
+// client := create_connection()
+// collection := client.Database("training_db").Collection("users")
+// result, _ := collection.CountDocuments(ctx, User{})
+// return result
+// }
 func find_user(username string) (User, error) {
 	client := create_connection()
 	collection := client.Database("training_db").Collection("users")

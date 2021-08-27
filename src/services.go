@@ -1,9 +1,11 @@
 package main
 
 import (
+	"errors"
+	"fmt"
+	"log"
 	"net/http"
 	"os"
-	"strconv"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
@@ -25,8 +27,40 @@ func CreateToken(user User) (string, error) {
 	}
 	return token, nil
 }
+func CheckToken(token string, c *gin.Context) error {
+	log.Println("here")
+	log.Println(token)
+	// // Initialize a new instance of `Claims`
+	claims := &jwt.MapClaims{}
 
+	// Parse the JWT string and store the result in `claims`.
+	// Note that we are passing the key in this method as well. This method will return an error
+	// if the token is invalid (if it has expired according to the expiry time we set on sign in),
+	// or if the signature does not match
+	tkn, err := jwt.ParseWithClaims(token, claims, func(token *jwt.Token) (interface{}, error) {
+		var jwtKey = []byte(os.Getenv("ACCESS_SECRET"))
+		return jwtKey, nil
+	})
+	if err != nil {
+		if err == jwt.ErrSignatureInvalid {
+			// c.JSON(http.StatusUnauthorized, "StatusUnauthorized")
+			return errors.New("StatusUnauthorized")
+		}
+		// c.JSON(http.StatusBadRequest, "StatusBadRequest")
+		return errors.New("StatusUnauthorized")
+	}
+	if !tkn.Valid {
+		// c.JSON(http.StatusUnauthorized, "StatusUnauthorized")
+		return errors.New("StatusUnauthorized")
+	}
+
+	// Finally, return the welcome message to the user, along with their
+	// username given in the token
+	log.Println(http.StatusOK, []byte(fmt.Sprintf("Welcome %s!", claims)))
+	return nil
+}
 func Login(c *gin.Context) {
+	log.Println(loginCookies)
 	var user User
 	if err := c.Bind(&user); err != nil {
 		c.JSON(http.StatusUnprocessableEntity, "Invalid json provided")
@@ -47,6 +81,10 @@ func Login(c *gin.Context) {
 	// }
 
 	result, err := find_user(user.Username)
+	if result.Password != user.Password {
+		c.JSON(http.StatusUnauthorized, "Please provide valid login details")
+		return
+	}
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, "Please provide valid login details")
 		return
@@ -57,14 +95,13 @@ func Login(c *gin.Context) {
 		return
 	}
 	lc := loginCookie{
-		value:      strconv.FormatUint(uint64(result.UserNo), 10),
+		value:      token,
 		expiration: time.Now().Add(24 * time.Hour),
 		origin:     c.Request.RemoteAddr,
-		token:      token,
 	}
 
 	loginCookies[lc.value] = &lc
-	c.SetCookie(loginCookieName, lc.token, 10*60, "", "localhost", false, true)
-
+	c.SetCookie(loginCookieName, lc.value, 10*60, "", "localhost", false, true)
+	log.Println(loginCookies)
 	c.JSON(http.StatusOK, token)
 }
