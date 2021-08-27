@@ -60,7 +60,6 @@ func CheckToken(token string, c *gin.Context) error {
 	return nil
 }
 func Login(c *gin.Context) {
-	log.Println(loginCookies)
 	var user User
 	if err := c.Bind(&user); err != nil {
 		c.JSON(http.StatusUnprocessableEntity, "Invalid json provided")
@@ -81,11 +80,14 @@ func Login(c *gin.Context) {
 	// }
 
 	result, err := find_user(user.Username)
-	if result.Password != user.Password {
-		c.JSON(http.StatusUnauthorized, "Please provide valid login details")
+	log.Println(result.Username, result.Password)
+	log.Println(user.Username, user.Password)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, "No user found")
 		return
 	}
-	if err != nil {
+
+	if result.Password != user.Password {
 		c.JSON(http.StatusUnauthorized, "Please provide valid login details")
 		return
 	}
@@ -94,14 +96,15 @@ func Login(c *gin.Context) {
 		c.JSON(http.StatusUnprocessableEntity, err.Error())
 		return
 	}
-	lc := loginCookie{
-		value:      token,
-		expiration: time.Now().Add(24 * time.Hour),
-		origin:     c.Request.RemoteAddr,
-	}
+	// lc := loginCookie{
+	// 	value:      token,
+	// 	expiration: time.Now().Add(24 * time.Hour),
+	// 	origin:     c.Request.RemoteAddr,
+	// }
 
-	loginCookies[lc.value] = &lc
-	c.SetCookie(loginCookieName, lc.value, 10*60, "", "localhost", false, true)
+	// loginCookies[lc.value] = &lc
+	// c.SetCookie(loginCookieName, lc.value, 10*60, "", "localhost", false, true)
+	c.Header("auth", token)
 	log.Println(loginCookies)
 	c.JSON(http.StatusOK, token)
 }

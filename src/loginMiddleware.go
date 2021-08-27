@@ -1,7 +1,6 @@
 package main
 
 import (
-	"log"
 	"net/http"
 	"os"
 	"strings"
@@ -21,23 +20,24 @@ func loginMiddleware(c *gin.Context) {
 		return
 	}
 
-	token, err := c.Cookie(loginCookieName)
-	if err != nil {
-		log.Println("No Cookie")
-		c.Redirect(http.StatusTemporaryRedirect, "/login")
-		return
-	}
+	// token, err := c.Cookie(loginCookieName)
+	// if err != nil {
+	// 	log.Println("No Cookie")
+	// 	c.Redirect(http.StatusTemporaryRedirect, "/login")
+	// 	return
+	// }
 
-	cookie, ok := loginCookies[token]
+	// cookie, ok := loginCookies[token]
 
-	if !ok ||
-		cookie.expiration.Unix() < time.Now().Unix() ||
-		cookie.origin != c.Request.RemoteAddr {
-		log.Println("not ok")
-		log.Println(cookie)
-		c.Redirect(http.StatusTemporaryRedirect, "/login")
-	}
+	// if !ok ||
+	// 	cookie.expiration.Unix() < time.Now().Unix() ||
+	// 	cookie.origin != c.Request.RemoteAddr {
+	// 	log.Println("not ok")
+	// 	log.Println(cookie)
+	// 	c.Redirect(http.StatusTemporaryRedirect, "/login")
+	// }
 	// // Initialize a new instance of `Claims`
+	token := c.GetHeader("auth")
 	claims := &jwt.MapClaims{}
 
 	// Parse the JWT string and store the result in `claims`.
@@ -70,4 +70,5 @@ type loginCookie struct {
 	value      string
 	expiration time.Time
 	origin     string
+	token      string
 }
