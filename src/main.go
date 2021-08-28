@@ -1,11 +1,9 @@
 package main
 
-var counter int64
+import "os"
 
-// func init() {
-// 	counter = set_counter()
-// }
 func main() {
+	os.Setenv("ACCESS_SECRET", "omkar")
 
 	r := registerRoutes()
 	r.Run(":8080")

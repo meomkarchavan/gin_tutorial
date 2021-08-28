@@ -11,8 +11,8 @@ import (
 func registerRoutes() *gin.Engine {
 	r := gin.Default()
 	r.Use(loginMiddleware)
-
-	r.LoadHTMLGlob("D:\\GO_Workspace\\src\\day7\\gin\\hello_world\\templates\\*.html")
+	r.LoadHTMLGlob("E:\\Omkar\\Coding\\go\\src\\gin_tutorial\\templates\\*html")
+	// r.LoadHTMLGlob("D:\\GO_Workspace\\src\\day7\\gin\\hello_world\\templates\\*.html")
 	r.GET("/", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "index.html", nil)
 	})
@@ -70,8 +70,8 @@ func registerRoutes() *gin.Engine {
 			)
 			return
 		}
-		user.UserNo = counter
-		counter += 1
+		// user.UserNo = counter
+		// counter += 1
 
 		result := create_user(user)
 
